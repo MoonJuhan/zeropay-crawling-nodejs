@@ -4,11 +4,8 @@
 // 관련 블로그
 // https://www.bsidesoft.com/?p=2209
 
-const axios = require("axios");
-const cheerio = require("cheerio");
-
 const webdriver = require("selenium-webdriver");
-const chrome = require("selenium-webdriver/chrome");
+
 const driver = new webdriver.Builder()
   .usingServer("http://localhost:9515")
   .forBrowser("chrome")
