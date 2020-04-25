@@ -94,7 +94,15 @@ var nextTable = () => {
                   tableScan();
                 });
               } else {
-                console.log("NEXT PAGE");
+                driver
+                  .findElement(By.className("pre_page"))
+                  .then((button) => {
+                    button.click().then(() => {
+                      tableScan();
+                    })
+                  }).catch(()=>{
+                    console.log("END");
+                  });
               }
             } else {
               i++;
