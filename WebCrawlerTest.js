@@ -15,10 +15,24 @@ const By = webdriver.By;
 const url = "https://www.zeropay.or.kr/main.do?pgmId=PGM0081";
 
 driver.get(url).then((res) => {
-  nextFunc();
+  onSelectAreaCode("부산광역시", "동래구", () => {
+  });
 });
 
-var nextFunc = function () {
+var onSelectAreaCode = function (cityCode, districtCode, cb) {
+  driver.findElement(By.id("tryCode")).then((select) => {
+    select.click().then((_) => {
+      select.sendKeys(cityCode);
+      driver.findElement(By.id("skkCode")).then((select) => {
+        select.click().then((_) => {
+          select.sendKeys(districtCode);
+          cb();
+        });
+      });
+    });
+  });
+};
+
   driver.findElement(By.className("btn-agree")).then((v) => {
     console.log("find");
     v.click().then((undefi) => {
