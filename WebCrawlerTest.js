@@ -42,6 +42,7 @@ var onClickCheckButton = function () {
       setTimeout(() => {
         tableScan(() => {
           sendToDB(tableData);
+          nextTable();
         });
       }, 1000);
     });
@@ -82,10 +83,34 @@ var tableScan = (nextFunc) => {
   });
 };
 
+var nextTable = () => {
+  driver.findElement(By.id("list_pager")).then((pager) => {
+    pager.findElement(By.tagName("span")).then((span) => {
+      span.findElements(By.tagName("a")).then((buttonArr) => {
+        var checkButton = (i) => {
+          buttonArr[i].getAttribute("class").then((res) => {
+            if (res == "on") {
+              console.log(i);
+              i++;
+              if (i < buttonArr.length) {
+                buttonArr[i].click().then(() => {
+                  setTimeout(() => {
+                    tableScan(() => {
+                      sendToDB(tableData);
+                      nextTable();
+                    });
+                  }, 1000);
+                });
+              } else {
+                console.log("NEXT PAGE");
               }
-            });
+            } else {
+              i++;
+              checkButton(i);
+            }
           });
-        }
+        };
+        checkButton(0);
       });
     });
   });
