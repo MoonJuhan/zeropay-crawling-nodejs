@@ -41,6 +41,7 @@ var onClickCheckButton = function () {
     v.click().then(() => {
       setTimeout(() => {
         tableScan(() => {
+          sendToDB(tableData);
         });
       }, 1000);
     });
@@ -88,4 +89,9 @@ var tableScan = (nextFunc) => {
       });
     });
   });
+};
+
+var sendToDB = (params) => {
+  // send to DB
+  console.log(params);
 };
