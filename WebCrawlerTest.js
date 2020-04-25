@@ -39,48 +39,46 @@ var onSelectAreaCode = function (cityCode, districtCode, cb) {
 var onClickCheckButton = function () {
   driver.findElement(By.className("btn-agree")).then((v) => {
     v.click().then(() => {
-      setTimeout(() => {
-        tableScan(() => {
-          sendToDB(tableData);
-          nextTable();
-        });
-      }, 1000);
+      tableScan();
     });
   });
 };
 
-var tableScan = (nextFunc) => {
+var tableScan = () => {
   tableData = [];
-  driver.findElement(By.className("mw_table800")).then((res) => {
-    res.findElement(By.tagName("tbody")).then((els) => {
-      els.findElements(By.tagName("tr")).then((resTr) => {
-        var scanRow = (row, num) => {
-          if (row[num]) {
-            row[num].findElements(By.tagName("td")).then((resTd) => {
-              var store = {};
-              resTd[0].getText().then((resText) => {
-                store.name = resText;
-                resTd[1].getText().then((resText) => {
-                  store.address = resText;
-                  resTd[2].getText().then((resText) => {
-                    store.type = resText;
-                    tableData.push(store);
-                    num++;
-                    scanRow(row, num);
+  setTimeout(() => {
+    driver.findElement(By.className("mw_table800")).then((res) => {
+      res.findElement(By.tagName("tbody")).then((els) => {
+        els.findElements(By.tagName("tr")).then((resTr) => {
+          var scanRow = (row, num) => {
+            if (row[num]) {
+              row[num].findElements(By.tagName("td")).then((resTd) => {
+                var store = {};
+                resTd[0].getText().then((resText) => {
+                  store.name = resText;
+                  resTd[1].getText().then((resText) => {
+                    store.address = resText;
+                    resTd[2].getText().then((resText) => {
+                      store.type = resText;
+                      tableData.push(store);
+                      num++;
+                      scanRow(row, num);
+                    });
                   });
                 });
               });
-            });
-          } else {
-            nextFunc();
-          }
-        };
-        var i = 0;
+            } else {
+              sendToDB(tableData);
+              nextTable();
+            }
+          };
+          var i = 0;
 
-        scanRow(resTr, i);
+          scanRow(resTr, i);
+        });
       });
     });
-  });
+  }, 1000);
 };
 
 var nextTable = () => {
@@ -90,16 +88,10 @@ var nextTable = () => {
         var checkButton = (i) => {
           buttonArr[i].getAttribute("class").then((res) => {
             if (res == "on") {
-              console.log(i);
               i++;
               if (i < buttonArr.length) {
                 buttonArr[i].click().then(() => {
-                  setTimeout(() => {
-                    tableScan(() => {
-                      sendToDB(tableData);
-                      nextTable();
-                    });
-                  }, 1000);
+                  tableScan();
                 });
               } else {
                 console.log("NEXT PAGE");
@@ -115,6 +107,8 @@ var nextTable = () => {
     });
   });
 };
+
+var nextPager = () => {};
 
 var sendToDB = (params) => {
   // send to DB
