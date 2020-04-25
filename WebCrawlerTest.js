@@ -14,8 +14,11 @@ const By = webdriver.By;
 
 const url = "https://www.zeropay.or.kr/main.do?pgmId=PGM0081";
 
+var tableData = [];
+
 driver.get(url).then((res) => {
   onSelectAreaCode("부산광역시", "동래구", () => {
+    onClickCheckButton();
   });
 });
 
@@ -33,40 +36,51 @@ var onSelectAreaCode = function (cityCode, districtCode, cb) {
   });
 };
 
+var onClickCheckButton = function () {
   driver.findElement(By.className("btn-agree")).then((v) => {
-    console.log("find");
-    v.click().then((undefi) => {
-      console.log("click");
+    v.click().then(() => {
       setTimeout(() => {
-        tableScan();
+        tableScan(() => {
+        });
       }, 1000);
     });
   });
 };
 
-var tableScan = function () {
+var tableScan = (nextFunc) => {
+  tableData = [];
   driver.findElement(By.className("mw_table800")).then((res) => {
     res.findElement(By.tagName("tbody")).then((els) => {
       els.findElements(By.tagName("tr")).then((resTr) => {
-        for (var i in resTr) {
-          resTr[i].findElements(By.tagName("td")).then((resTd) => {
-            var store = {};
-            resTd[0].getText().then((resText) => {
-              store.name = resText;
-              if (store.name && store.address && store.type) {
-                console.log(store);
-              }
+        var scanRow = (row, num) => {
+          if (row[num]) {
+            row[num].findElements(By.tagName("td")).then((resTd) => {
+              var store = {};
+              resTd[0].getText().then((resText) => {
+                store.name = resText;
+                resTd[1].getText().then((resText) => {
+                  store.address = resText;
+                  resTd[2].getText().then((resText) => {
+                    store.type = resText;
+                    tableData.push(store);
+                    num++;
+                    scanRow(row, num);
+                  });
+                });
+              });
             });
-            resTd[1].getText().then((resText) => {
-              store.address = resText;
-              if (store.name && store.address && store.type) {
-                console.log(store);
-              }
-            });
-            resTd[2].getText().then((resText) => {
-              store.type = resText;
-              if (store.name && store.address && store.type) {
-                console.log(store);
+          } else {
+            nextFunc();
+          }
+        };
+        var i = 0;
+
+        scanRow(resTr, i);
+      });
+    });
+  });
+};
+
               }
             });
           });
