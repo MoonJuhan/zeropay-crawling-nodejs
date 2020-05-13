@@ -16,8 +16,13 @@ const url = "https://www.zeropay.or.kr/main.do?pgmId=PGM0081";
 
 var tableData = [];
 
+var cityCode = "강원도";
+var districtCode = "화천군";
+
+var firstPreBtnCheck = true;
+
 driver.get(url).then((res) => {
-  onSelectAreaCode("부산광역시", "동래구", () => {
+  onSelectAreaCode(cityCode, districtCode, () => {
     onClickCheckButton();
   });
 });
@@ -95,12 +100,23 @@ var nextTable = () => {
                 });
               } else {
                 driver
-                  .findElement(By.className("pre_page"))
+                  .findElements(By.className("pre_page"))
                   .then((button) => {
-                    button.click().then(() => {
-                      tableScan();
-                    })
-                  }).catch(()=>{
+                    if (button.length == 1 && firstPreBtnCheck) {
+                      firstPreBtnCheck = false;
+
+                      button[button.length - 1].click().then(() => {
+                        tableScan();
+                      });
+                    } else if (button.length == 2) {
+                      button[button.length - 1].click().then(() => {
+                        tableScan();
+                      });
+                    } else {
+                      crawlingEnd();
+                    }
+                  })
+                  .catch(() => {
                     console.log("END");
                   });
               }
@@ -121,4 +137,9 @@ var nextPager = () => {};
 var sendToDB = (params) => {
   // send to DB
   console.log(params);
+};
+
+var crawlingEnd = () => {
+  // crawling end
+  console.log("END");
 };
