@@ -1,13 +1,12 @@
-// Selenium API 사이트
-//https://www.selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebElement.html
-
-// 관련 블로그
-// https://www.bsidesoft.com/?p=2209
+// 환경 설정
+var cityCode = "강원도";
+var districtCode = "화천군";
+var localWebDriver = "http://localhost:9515";
 
 const webdriver = require("selenium-webdriver");
 
 const driver = new webdriver.Builder()
-  .usingServer("http://localhost:9515")
+  .usingServer(localWebDriver)
   .forBrowser("chrome")
   .build();
 const By = webdriver.By;
@@ -15,9 +14,6 @@ const By = webdriver.By;
 const url = "https://www.zeropay.or.kr/main.do?pgmId=PGM0081";
 
 var tableData = [];
-
-var cityCode = "강원도";
-var districtCode = "화천군";
 
 var firstPreBtnCheck = true;
 
