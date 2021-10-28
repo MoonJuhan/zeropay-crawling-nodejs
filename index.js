@@ -1,17 +1,17 @@
 // 환경 설정
-var cityCode = "강원도";
-var districtCode = "화천군";
-var localWebDriver = "http://localhost:9515";
+var cityCode = '강원도';
+var districtCode = '화천군';
+var localWebDriver = 'http://localhost:9515';
 
-const webdriver = require("selenium-webdriver");
+const webdriver = require('selenium-webdriver');
 
 const driver = new webdriver.Builder()
   .usingServer(localWebDriver)
-  .forBrowser("chrome")
+  .forBrowser('chrome')
   .build();
 const By = webdriver.By;
 
-const url = "https://www.zeropay.or.kr/main.do?pgmId=PGM0081";
+const url = 'https://www.zeropay.or.kr/main.do?pgmId=PGM0081';
 
 var tableData = [];
 
@@ -24,10 +24,10 @@ driver.get(url).then((res) => {
 });
 
 var onSelectAreaCode = function (cityCode, districtCode, cb) {
-  driver.findElement(By.id("tryCode")).then((select) => {
+  driver.findElement(By.id('tryCode')).then((select) => {
     select.click().then((_) => {
       select.sendKeys(cityCode);
-      driver.findElement(By.id("skkCode")).then((select) => {
+      driver.findElement(By.id('skkCode')).then((select) => {
         select.click().then((_) => {
           select.sendKeys(districtCode);
           cb();
@@ -38,7 +38,7 @@ var onSelectAreaCode = function (cityCode, districtCode, cb) {
 };
 
 var onClickCheckButton = function () {
-  driver.findElement(By.className("btn-agree")).then((v) => {
+  driver.findElement(By.className('btn-agree')).then((v) => {
     v.click().then(() => {
       tableScan();
     });
@@ -48,12 +48,12 @@ var onClickCheckButton = function () {
 var tableScan = () => {
   tableData = [];
   setTimeout(() => {
-    driver.findElement(By.className("mw_table800")).then((res) => {
-      res.findElement(By.tagName("tbody")).then((els) => {
-        els.findElements(By.tagName("tr")).then((resTr) => {
+    driver.findElement(By.className('mw_table800')).then((res) => {
+      res.findElement(By.tagName('tbody')).then((els) => {
+        els.findElements(By.tagName('tr')).then((resTr) => {
           var scanRow = (row, num) => {
             if (row[num]) {
-              row[num].findElements(By.tagName("td")).then((resTd) => {
+              row[num].findElements(By.tagName('td')).then((resTd) => {
                 var store = {};
                 resTd[0].getText().then((resText) => {
                   store.name = resText;
@@ -83,12 +83,12 @@ var tableScan = () => {
 };
 
 var nextTable = () => {
-  driver.findElement(By.id("list_pager")).then((pager) => {
-    pager.findElement(By.tagName("span")).then((span) => {
-      span.findElements(By.tagName("a")).then((buttonArr) => {
+  driver.findElement(By.id('list_pager')).then((pager) => {
+    pager.findElement(By.tagName('span')).then((span) => {
+      span.findElements(By.tagName('a')).then((buttonArr) => {
         var checkButton = (i) => {
-          buttonArr[i].getAttribute("class").then((res) => {
-            if (res == "on") {
+          buttonArr[i].getAttribute('class').then((res) => {
+            if (res == 'on') {
               i++;
               if (i < buttonArr.length) {
                 buttonArr[i].click().then(() => {
@@ -96,7 +96,7 @@ var nextTable = () => {
                 });
               } else {
                 driver
-                  .findElements(By.className("pre_page"))
+                  .findElements(By.className('pre_page'))
                   .then((button) => {
                     if (button.length == 1 && firstPreBtnCheck) {
                       firstPreBtnCheck = false;
@@ -113,7 +113,7 @@ var nextTable = () => {
                     }
                   })
                   .catch(() => {
-                    console.log("END");
+                    console.log('END');
                   });
               }
             } else {
@@ -128,8 +128,6 @@ var nextTable = () => {
   });
 };
 
-var nextPager = () => {};
-
 var sendToDB = (params) => {
   // send to DB
   console.log(params);
@@ -137,5 +135,5 @@ var sendToDB = (params) => {
 
 var crawlingEnd = () => {
   // crawling end
-  console.log("END");
+  console.log('END');
 };
